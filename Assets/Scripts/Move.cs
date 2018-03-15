@@ -12,11 +12,13 @@ public class Move : MonoBehaviour {
     public float speed;    
     public float jumpForce;
     private float fallMultiplier = 2f;
+    private SpriteRenderer mySpriteRenderer;	
     // Use this for initialization
     void Start () {
         playerAudio = GetComponent<AudioSource>();
         anim = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
+	mySpriteRenderer = GetComponent<SpriteRenderer>();    
     }	
 	// Update is called once per frame
     private void Update () {
@@ -66,8 +68,12 @@ public class Move : MonoBehaviour {
         bool jumping = vert > 0f;
         anim.SetBool("Jump", jumping);
         bool down = v == -1;
+	if (down == true)
+	{ mySpriteRenderer.flipY = false; }
         anim.SetBool("Down", down);
         bool rise = v == 1;
+	if (rise == true)
+	{ mySpriteRenderer.flipY = true; }
         anim.SetBool("Rise", rise);
     }
 }
