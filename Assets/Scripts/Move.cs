@@ -9,32 +9,32 @@ public class Move : MonoBehaviour {
     Animator anim;
     AudioSource playerAudio;
     //public AudioClip hey;
-    public float speed;    
-    public float jumpForce;
+    public float speed = 2f;
+    public float jumpForce = 2f;
     private float fallMultiplier = 2f;
-    private SpriteRenderer mySpriteRenderer;	
+    private SpriteRenderer mySpriteRenderer;
     // Use this for initialization
     void Start () {
         playerAudio = GetComponent<AudioSource>();
         anim = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
-	mySpriteRenderer = GetComponent<SpriteRenderer>();    
-    }	
+	      mySpriteRenderer = GetComponent<SpriteRenderer>();
+    }
 	// Update is called once per frame
     private void Update () {
+        StartCoroutine(SlowTime());
         if (controller.isGrounded)
         {
             verticalVelocity = -gravity * Time.deltaTime;
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 verticalVelocity = jumpForce;
-
             }
         }
         else
         {
             verticalVelocity -= gravity *fallMultiplier* Time.deltaTime;
-        }        
+        }
         Vector2 moveVector = Vector2.zero;
         moveVector.x = Input.GetAxisRaw("Horizontal")*speed;
         moveVector.y = verticalVelocity;
@@ -68,12 +68,32 @@ public class Move : MonoBehaviour {
         bool jumping = vert > 0f;
         anim.SetBool("Jump", jumping);
         bool down = v == -1;
-	if (down == true)
-	{ mySpriteRenderer.flipY = false; }
+      	if (down == true)
+      	{ mySpriteRenderer.flipY = false; }
         anim.SetBool("Down", down);
         bool rise = v == 1;
-	if (rise == true)
-	{ mySpriteRenderer.flipY = true; }
+      	if (rise == true)
+      	{ mySpriteRenderer.flipY = true; }
         anim.SetBool("Rise", rise);
+    }
+
+    IEnumerator SlowTime()
+    {
+        if (Input.GetKey(KeyCode.E))
+        {
+            Time.timeScale = 0.2f;
+            speed = 10f;
+            anim.speed = 5f;
+            gravity = 30f;
+            jumpForce = 25f;
+            fallMultiplier = 10f;
+            yield return new WaitForSeconds(5);
+            Time.timeScale = 1f;
+            speed = 2f;
+            anim.speed = 1f;
+            gravity = 6f;
+            jumpForce = 5f;
+            fallMultiplier = 2f;
+        }
     }
 }
